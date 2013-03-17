@@ -13,6 +13,7 @@ import javax.script.*;
 public class JavaScriptEvaluator implements PlugIn, Runnable  {
 	Thread thread;
 	String script;
+	private Object result;
 
 	// run script in separate thread
 	public void run(String script) {
@@ -33,12 +34,13 @@ public class JavaScriptEvaluator implements PlugIn, Runnable  {
 	}
 
 	public void run() {
+		result = null;
 		try {
 			ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 			ScriptEngine engine = scriptEngineManager.getEngineByName("ECMAScript");
 			if (engine == null)
 				{IJ.error("Could not find JavaScript engine"); return;}
-			engine.eval(script);
+			result = engine.eval(script);
 		} catch(Throwable e) {
 			String msg = e.getMessage();
 			if (msg.startsWith("sun.org.mozilla.javascript.internal.EcmaError: "))
@@ -50,4 +52,8 @@ public class JavaScriptEvaluator implements PlugIn, Runnable  {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "" + result;
+	}
 }

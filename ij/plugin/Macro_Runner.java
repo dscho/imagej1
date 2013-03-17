@@ -236,7 +236,7 @@ public class Macro_Runner implements PlugIn {
 					IJ.runPlugIn("Jython", script);
 			}
 		}
-		return null;
+		return "" + js;
 	}
 	
 	/** Runs a BeanShell script the on current thread. Uses the plugin at
