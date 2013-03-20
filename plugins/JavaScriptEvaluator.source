@@ -13,6 +13,7 @@ import javax.script.*;
 public class JavaScriptEvaluator implements PlugIn, Runnable  {
 	private Thread thread;
 	private String script;
+	private String arg;
 	private Object result;
 
 	// run script in separate thread
@@ -21,6 +22,7 @@ public class JavaScriptEvaluator implements PlugIn, Runnable  {
 		if (!IJ.isJava16())
 			{IJ.error("Java 1.6 or later required"); return;}
 		this.script = script;
+		this.arg = arg;
 		thread = new Thread(this, "JavaScript"); 
 		thread.setPriority(Math.max(thread.getPriority()-2, Thread.MIN_PRIORITY));
 		thread.start();
@@ -29,6 +31,7 @@ public class JavaScriptEvaluator implements PlugIn, Runnable  {
 	// run script in current thread
 	public String run(String script, String arg) {
 		this.script = script;
+		this.arg = arg;
 		run();
 		return null;
 	}
@@ -40,6 +43,7 @@ public class JavaScriptEvaluator implements PlugIn, Runnable  {
 			ScriptEngine engine = scriptEngineManager.getEngineByName("ECMAScript");
 			if (engine == null)
 				{IJ.error("Could not find JavaScript engine"); return;}
+			engine.put("arg", arg);
 			result = engine.eval(script);
 		} catch(Throwable e) {
 			String msg = e.getMessage();
